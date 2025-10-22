@@ -2,7 +2,8 @@
 
 function nkt_arrow_effect(){ ?>
     <div class="nkt-arrow-effect"> 
-        <img src="<?= TEMPLATE_DIRECTORY_URL ?>/assets/images/image-arrow.png" alt="icon arrow"/>
+        <img src="<?= TEMPLATE_DIRECTORY_URL ?>/assets/images/image-arrow.png" alt="icon arrow srcoll"/>
+        <span>Scroll</span>
     </div>
 <?php }
 

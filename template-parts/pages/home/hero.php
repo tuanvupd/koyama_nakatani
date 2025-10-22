@@ -1,14 +1,41 @@
 <?php
     $hero = nkt_translate('hero', 'home');
+    $sliders = [
+        [
+            'desktop' => '/assets/images/home/img-hm-slider-001-min.jpg',
+            'mobile'  => '/assets/images/home/img-hm-slider-mb-001-min.jpg'
+        ],
+        [
+            'desktop' => '/assets/images/home/img-hm-slider-002-min.jpg',
+            'mobile'  => '/assets/images/home/img-hm-slider-mb-002-min.jpg'
+        ],
+        [
+            'desktop' => '/assets/images/home/img-hm-slider-003-min.jpg',
+            'mobile'  => '/assets/images/home/img-hm-slider-mb-003-min.jpg'
+        ],
+        [
+            'desktop' => '/assets/images/home/img-hm-slider-004-min.jpg',
+            'mobile'  => '/assets/images/home/img-hm-slider-mb-004-min.jpg'
+        ],
+        [
+            'desktop' => '/assets/images/home/img-hm-slider-005-min.jpg',
+            'mobile'  => '/assets/images/home/img-hm-slider-mb-005-min.jpg'
+        ],
+        [
+            'desktop' => '/assets/images/home/img-hm-slider-006-min.jpg',
+            'mobile'  => '/assets/images/home/img-hm-slider-mb-006-min.jpg'
+        ],
+    ]
 ?>
 <section class="nkt-hero section-fixed">
     <div class="nkt-hero__slider swiper">
         <div class="swiper-wrapper">
-            <?php for ($i = 1; $i <= 6; $i++): ?>
+              <?php foreach ($sliders as $index => $slider): ?>
                 <div class="swiper-slide nkt-hero__slide">
-                    <img src="<?= TEMPLATE_DIRECTORY_URL ?>/assets/images/home/img-slider-<?= sprintf('%03d', $i) ?>.jpg" alt="image slider <?= sprintf('%02d', $i) ?>"/>
+                    <img class="d-none d-md-block" src="<?= TEMPLATE_DIRECTORY_URL . $slider['desktop'] ?>" alt="home slider <?= $index + 1 ?>" />
+                    <img class="d-md-none d-block" src="<?= TEMPLATE_DIRECTORY_URL . $slider['mobile'] ?>" alt="home slider mobile <?= $index + 1 ?>" />
                 </div>
-            <?php endfor; ?>
+            <?php endforeach; ?> 
         </div>
     </div>
 
