@@ -1,0 +1,94 @@
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 64px;
+    
+
+    .logged-in & {
+        scroll-padding-top: 96px;
+
+        @media screen and (max-width: 782px) {
+            scroll-padding-top: 110px;
+        }
+    }
+}
+
+html,
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: #fff;
+    letter-spacing: 0.06em;
+}
+
+h1 {
+    font-size: 48px;
+
+    @include media-breakpoint-up(lg) {
+        font-size: 64px;
+    }
+}
+
+h2 {
+    font-size: 32px;
+
+    @include media-breakpoint-up(lg) {
+        font-size: 48px;
+    }
+}
+
+h3 {
+    font-size: 28px;
+
+    @include media-breakpoint-up(lg) {
+        font-size: 36px;
+    }
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+
+@keyframes s2 {
+    to {
+        transform: rotate(1turn)
+    }
+}
+
+
+.section-fixed{
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    z-index: 8;
+}
+
+.section-relative{
+    position: relative;
+    z-index: 998;
+    background: #fff;
+}
+
+.nkt-bg{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    img{
+        width: 100%;
+        height: 100%;
+        -o-object-fit: cover;
+        object-fit: cover;
+        -o-object-position: center;
+        object-position: center;
+    }
+}
+
+.nkt-bg-image{
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}

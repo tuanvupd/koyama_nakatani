@@ -1,0 +1,32 @@
+@import 'reservation';
+@import 'modal-book';
+
+@keyframes ca3_fade_move_down {
+    0% {
+        -webkit-transform: translate(0, -20px);
+        transform: translate(0, -20px);
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        -webkit-transform: translate(0, 20px);
+        transform: translate(0, 20px);
+        opacity: 0;
+    }
+}
+
+.nkt-arrow-effect{
+    position: absolute;
+    left: 50%;
+    bottom: 34px;
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translateX(-50%);
+    -webkit-animation: ca3_fade_move_down 2s 
+    ease-in-out infinite;
+    animation: ca3_fade_move_down 2s 
+    ease-in-out infinite;
+    z-index: 99;
+}

@@ -1,0 +1,55 @@
+.nkt-reservation{
+    position: absolute;
+    top: 115px;
+    right: 10px;
+    z-index: 99;
+
+    @media (max-width: 1023.98px) {
+        top:135px;
+    }
+
+    @media (max-width: 767.98px) {
+        display: none;
+    }
+
+    &__title{
+        font-size: 15px;
+        line-height: 125%;
+        letter-spacing: 0.06em;
+        font-family: $font-primary;
+        margin: 0;
+        color: #59493f;
+    }
+
+    &__phone{
+        color: #59493f;
+        font-size:20.94px;
+        padding-bottom: 10px;
+        padding-left: 5px;
+        padding-right: 10px;
+        border-bottom:1.5px solid #59493f;
+        margin: 10px 0;
+        a{
+            font-size: 29px;
+            text-decoration: none;
+            font-family: inherit;
+            letter-spacing: inherit;
+            color: inherit;
+        }
+    }
+
+    .btn{
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        min-width: 266px;
+        height: 55px;
+        padding: 10px;
+        background: #80624c;
+        color: #fff;
+        font-size: 18.67px;
+        letter-spacing: 0.06em;
+        line-height: 115%;
+        text-decoration: none;
+    }
+}

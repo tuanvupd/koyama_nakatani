@@ -1,0 +1,101 @@
+.cta-group {
+    
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 48px;
+        border-radius: 999px;
+        text-decoration: none;
+        padding: 18px 24px;
+        transition: all 0.3s ease;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 150%;
+
+        svg{
+            transition: all 0.3s ease;
+        }
+
+        &:hover{
+            svg{
+                transform: translateX(10px);
+            }
+        }
+
+        &.btn-white {
+            background: #FFF;
+            color: $color-primary;
+        }
+
+        &.btn-outline {
+            border: 1px solid rgba(27, 54, 93, 0.20);
+            background: #FFF;
+            padding: 17px 23px;
+        }
+
+        &.btn-white, &.btn-outline{
+            &:hover {
+                border-color: $color-primary;
+                background: $color-primary;
+                color: #FFF;
+            }
+        }
+
+        &.btn-glass {
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.10);
+            backdrop-filter: blur(6px);
+            color: #FFF;
+            padding: 17px 23px;
+
+            svg {
+                path {
+                    fill: #FFF;
+                    transition: all 0.3s ease-in-out;
+                }
+            }
+
+            &:hover {
+                color: $color-primary;
+                background: #FFF;
+                svg {
+                    path {
+                        fill: $color-primary;
+                    }
+                }
+            }
+        }
+
+        &.btn-primary {
+            background: $color-primary;
+            color: #FFF;
+
+            &:hover {
+                background: #fff;
+                color: $color-primary;
+            }
+        }
+    }
+}
+
+.btn-small {
+    color: #1b365d;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    padding: 8px 20px;
+    border-radius: 999px;
+    border: 1px solid #1b365d;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.3s ease-in-out;
+    flex-shrink: 0;
+
+    &:hover {
+        background: #fff;
+    }
+}

@@ -1,0 +1,78 @@
+.nkt-modal-book{
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    z-index: 99999;
+    background: rgba($color: #000000, $alpha: 0.6);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+
+    &.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .nkt-modal-book-content{
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%) scale(0.8);
+        width: 90%;
+        max-width: 800px;
+        height: 90%;
+        overflow-y: auto;
+        background-color: #fff;
+        box-shadow: 1px 1px 20px 7px rgba(2, 2, 2, 0.16);
+        border-radius: 10px;
+        padding: 32px;
+        display: flex;
+        align-items: center;
+        opacity: 0;
+        transition: all 0.3s ease 0.1s;
+
+        &.active {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .btn-close-modal-book{
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            background: $color-primary;
+            color:#fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border:none;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+
+            &:hover {
+                transform: scale(1.1);
+                background: darken($color-primary, 10%);
+            }
+        }
+
+        iframe{
+            width: 100%;
+            height: auto;
+            min-height: 80%;
+            overflow: auto;
+        }
+    }
+}
+
+.btn-open-modal-book{
+    cursor: pointer;
+    transition: all 0.2s ease;
+    &:hover {
+        transform: translateY(-2px);
+    }
+}

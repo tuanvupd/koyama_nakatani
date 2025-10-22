@@ -1,0 +1,188 @@
+.nkt-wines {
+    .cate-group{
+        padding-bottom: 40px;
+        background: #f9f4ef;
+
+        @media (max-width: 767.98px) {
+            padding-bottom: 26px;
+        }
+
+        &-top{
+            min-height: 546px;
+            padding: 114px 20px;
+
+            @media (max-width: 1023.98px) {
+                min-height: 400px;
+            }
+
+            @media (max-width: 767.98px) {
+                min-height: 288px;
+                padding-top: 120px;
+            }
+
+            h2{
+                font-size: 30px;
+                line-height: 28.36px;
+                font-weight: 500;
+                margin: 0;
+                color:#fff;
+
+                @media (max-width: 767.98px) {
+                    font-size: 24px;
+                    line-height: 26.71px;
+                }
+            }
+
+            &.nkt-bg-image{
+                position: relative;
+                z-index: 1;
+                &::before{
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba($color: $color-primary, $alpha: 0.95);
+                    mix-blend-mode: multiply;
+                    pointer-events: none;
+                    z-index: -1;
+                }
+            }
+        }
+
+        &__types{
+            background: rgba($color: #fff, $alpha: 0.84);
+            padding: 60px 40px 50px 40px;
+            margin-top: -313px;
+            box-shadow: 0 0 9px rgba(0, 0, 0, 0.31);
+            max-width: 884px;
+            margin-left: auto;
+            margin-right: auto;
+            z-index: 9;
+            position: relative;
+            gap:40px;
+
+            @media (max-width: 912.98px) {
+                max-width: calc(100% - 28px);
+            }
+
+            @media (max-width: 1023.98px) {
+                margin-top: -180px;
+                padding: 30px 20px;
+            }
+
+            @media (max-width: 767.98px) {
+                padding-top: 17px;
+                padding-left: 10px;
+                padding-right: 10px;
+                padding-bottom: 30px;
+                margin-top: -55px;
+            }
+
+            .type-group{
+                &__title{
+                    font-size: 24px;
+                    color:#80624c;
+                    line-height: 28.36px;
+                    font-weight: 500;
+                    padding-left: 10px;
+                    position: relative;
+                    margin: 0 0 12px 0;
+
+                    @media (max-width: 767.98px) {
+                        font-size: 18px;   
+                        line-height: 26.71px;   
+                        padding-left: 7px;
+                    }
+
+                    &::before{
+                        content: " ";
+                        display: inline-block;
+                        width: 6px;
+                        height: 80%;
+                        background: #69513d;
+                        position: absolute;
+                        left: 0;
+                        top:50%;
+                        transform: translateY(-50%);
+
+                        @media (max-width: 767.98px) {
+                            width: 3px;
+                        }
+                    }
+                }
+
+                &__wines{
+                    .wine-item{
+                        gap:40px;
+                        border-bottom: 1px dotted #80624c;
+                        padding-top: 19px;
+                        padding-bottom: 13px;
+
+                        @media (max-width: 1023.98px) {
+                            gap:24px;
+                        }
+
+                        @media (max-width: 767.98px) {
+                            padding-top: 12px;
+                            padding-bottom: 10px;
+                            gap:1rem;
+                        }
+
+                        h4, p{
+                            font-size: 15.92px;
+                            line-height: 19.11px;
+                            font-weight: 500;
+                            color:#80624c;
+                            @media (max-width: 767.98px) {
+                                font-size: 15px;
+                                line-height: 18px;
+                            }
+
+                            @media (max-width: 575.98px) {
+                                font-size: 13px;
+                                line-height: 16px;
+                            }
+
+                            @media (max-width: 389.98px) {
+                                font-size: 12px;
+                                line-height: 15px;
+                            }
+                        }
+
+                        h4{
+                            width: 100%;
+                        }
+
+                        p{
+                            &.producer{
+                                width: 37%;
+                            }
+
+                            &.price{
+                                min-width: 50px;
+                                width: 50px;
+
+                                @media (max-width: 389.98px) {
+                                    min-width: 42px;
+                                    width: 42px;
+                                }
+                            }
+
+                            &.vintage{
+                                width: 40px;
+                                min-width: 40px;    
+
+                                @media (max-width: 389.98px) {
+                                    min-width:36px;
+                                    width: 36px;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

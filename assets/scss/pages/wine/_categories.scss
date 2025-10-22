@@ -1,0 +1,265 @@
+.nkt-list-categories{
+    background-image: url('../../../images/home/bg-about-ss.jpg');
+    margin-top: 100vh;
+    padding:40px 0;
+    position: sticky;
+    top: -73px;
+    z-index: 9999;
+    will-change: height;
+    transition: height 0.4s ease;
+
+    @media (max-width: 1023.98px) {
+        top:-60px;
+    }
+
+    @media (max-width: 767.98px) {
+        padding-top: 24px;
+        padding-bottom: 30px;
+        top:-30px;
+    }
+
+
+    &::before{
+        content: " ";
+        display: inline-block;
+        width: 100%;
+        height: 100%;
+        background: rgba($color: #f7f3ee, $alpha: 0.13);
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: -1;
+    }
+
+    &__intro{
+        opacity: 1;
+        z-index: 1;
+        transition: all 0.3s ease;
+        h2{
+            font-size: 25.48px;
+            line-height: 37.38px;
+            color: #80624c;
+            margin: 0;
+
+            @media (max-width: 767.98px) {
+                font-size: 24px;
+                line-height: 36px;
+            }
+        }
+
+        p, a{
+            font-size: 14.86px;
+            line-height: 22.39px;
+            font-family: $font-second;
+            color:#59493f;
+        }
+
+        p{
+            margin: 12px 0 0 0;
+        }
+
+        a{
+            text-decoration: none;
+            margin-top: 8px;
+            display: inline-block;
+        }
+    }
+
+    &__list{
+        display: flex;
+        justify-content: space-between;
+        gap:32px;
+        width: 100%;
+        margin-top: 30px;
+        will-change: transform, height;
+
+        @media (max-width: 1199.98px) {
+            gap:24px;
+        }
+
+        @media (max-width: 1023.98px) { 
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 767.98px) {
+            margin-top: 15px;
+        }
+
+        @media (max-width: 575.98px) {
+            gap:20px;
+        }
+
+        .cate-item{
+            cursor: pointer;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: space-between;
+            position: relative;
+            padding-bottom: 25px;
+
+            @media (min-width: 768px) {
+                height: auto;
+                min-height: 100%;
+            }
+
+            @media (max-width: 1023.98px) { 
+                width: calc(25% - 18px)
+            }
+
+            @media (max-width: 575.98px) {
+                width: calc((100% / 3) - (40px / 3));
+            }
+
+            &__arrow {
+                position: absolute;
+                display: inline-block;
+                left: 50%;
+                bottom: 0;
+                transform: translateX(-50%);
+                img{
+                    @media (max-width: 575.98px) {
+                        width: 100%;
+                        height: auto;
+                        max-width: 16px;
+                    }
+                }
+            }
+
+            &__thumbnail{
+                transition: opacity 0.4s ease, margin-bottom 0.4s ease;
+                overflow: hidden;
+
+                @media (max-width: 767.98px) {
+                    margin-bottom: 10px;
+                    // display: none;
+                }
+
+                img{
+                    width: 100%;
+                    height: auto;
+                    max-width: 80px;
+                }
+            }
+
+            &__title{
+                font-size: 16px;
+                line-height: 125%;
+                color: #69513e;
+                font-weight: 500;
+                margin: 16px 0 10px 0;
+
+                @media (max-width: 767.98px) {
+                    margin-top:0;
+                    margin-bottom: 5px;
+                }
+
+                @media (max-width: 575.98px) {
+                    font-size: 13.8px;
+                    line-height: 15.89px;
+                }
+            }
+
+
+            &:first-child, &:nth-child(2){
+                @media (max-width: 575.98px) {
+                    width: calc(50% - 10px);
+                }
+            }
+
+            &#item-cate-champagne{
+                .cate-item__thumbnail img {
+                    max-width: 46.4px;
+
+                    @media (max-width: 575.98px) {
+                        max-width: 31.2px;
+                    }
+                }
+            }
+
+            &#item-cate-aperitifs-digestifs{
+                .cate-item__thumbnail img {
+                    max-width: 80px;
+
+                    @media (max-width: 1199.98px) {
+                        max-width: 68.8px;
+                    }
+
+                    @media (max-width: 575.98px) {
+                        max-width: 52.8px;
+                    }
+                }
+            }
+
+            &#item-cate-bordeaux-blancs{
+                .cate-item__thumbnail img {
+                    max-width: 86.4px;
+
+
+                    @media (max-width: 1199.98px) {
+                        max-width: 70.4px;
+                    }
+
+                    @media (max-width: 575.98px) {
+                        max-width: 54.4px;
+                    }
+                }
+            }
+
+            &#item-cate-bourgogne-blanc, &#item-cate-la-vallee-du-rhone-rouge{
+                .cate-item__thumbnail img {
+                    max-width: 82.4px;
+
+                    @media (max-width: 1199.98px) {
+                        max-width: 82px;
+                    }
+
+                    @media (max-width: 575.98px) {
+                        max-width: 65.6px;
+                    }
+                }
+            }
+
+            &#item-cate-la-vallee-du-rhone-blanc, &#item-cate-bourgogne-rouge{
+                .cate-item__thumbnail img {
+                    max-width: 80px;
+
+                    @media (max-width: 1199.98px) {
+                        max-width: 57.6px;
+                    }
+
+                    @media (max-width: 575.98px) {
+                        max-width: 56px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+.nkt-list-categories {
+    &__list {
+        box-sizing: border-box;
+        overflow: hidden;
+        
+        .cate-item {
+            transform-style: preserve-3d;
+            
+            &__thumbnail {
+                transform-origin: center bottom;
+                will-change: transform, opacity, margin-bottom;
+            }
+            
+            &__title, &__arrow {
+                will-change: transform;
+            }
+        }
+    }
+
+    &.has-sticky{
+        .nkt-list-categories__intro{
+            opacity: 0;
+            z-index: -1;
+        }
+    }
+}

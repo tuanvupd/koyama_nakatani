@@ -1,0 +1,13 @@
+.error404 {
+    .site-main{
+        padding-top: 20vh;
+        padding-bottom: 20vh;
+        text-align: center;
+
+        .btn-primary{
+            &:hover{
+                background: #dee2e6;
+            }
+        }
+    }
+}
