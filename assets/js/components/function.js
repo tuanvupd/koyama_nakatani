@@ -211,7 +211,7 @@
        nktLanguage()
        nktHeroSlider()
        nktaboutCarousel()
-       nktScrollWineItem()
+    //    nktScrollWineItem()
        nktModalBook()
     })
 })(jQuery); 

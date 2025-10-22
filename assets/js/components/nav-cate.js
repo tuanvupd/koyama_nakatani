@@ -6,7 +6,10 @@
     let isAnimating = false;
     let originalHeight = 0;
     let minimizedHeight = 0;
-    
+    let isClickInteraction = false;
+    let scrollTimeout = null;
+    let clickScrollTimeout = null;
+
     function initCategoryScroll() {
         if (!isMobile()) {
             return;
@@ -23,8 +26,8 @@
         
         let lastScrollTop = 0;
         
-        $(window).on('scroll', function() {
-            if (isAnimating) return;
+        function handleScroll() {
+            if (isAnimating || isClickInteraction) return;
             
             const scrollTop = $(window).scrollTop();
             const scrollDirection = scrollTop > lastScrollTop ? 'down' : 'up';
@@ -34,25 +37,41 @@
             const stickyStartPoint = sectionOffset + stickyTop;
             const isInStickyPosition = scrollTop >= stickyStartPoint;
             
-            // SCROLL UP -> HIDE
-            if (scrollDirection === 'up' && isInStickyPosition && !hasAnimatedShow) {
-                showThumbnails($list, $thumbnails, $cateItems);
-            }
-            // SCROLL DOWN -> HIDE
-            else if (scrollDirection === 'down' && isInStickyPosition && !hasAnimatedHide) {
-                hideThumbnails($list, $thumbnails, $cateItems);
-            }
-            // Get out of the sticky zone -> reset
-            else if (!isInStickyPosition) {
-                hasAnimatedHide = false;
-                hasAnimatedShow = true;
-            }
-        });
+            // Clear existing timeout
+            if (scrollTimeout) clearTimeout(scrollTimeout);
+            
+            // Debounce scroll for better performance
+            scrollTimeout = setTimeout(() => {
+                if (isAnimating || isClickInteraction) return;
+                
+                // SCROLL UP -> SHOW
+                if (scrollDirection === 'up' && isInStickyPosition && !hasAnimatedShow) {
+                    showThumbnails($list, $thumbnails, $cateItems);
+                }
+                // SCROLL DOWN -> HIDE
+                else if (scrollDirection === 'down' && isInStickyPosition && !hasAnimatedHide) {
+                    hideThumbnails($list, $thumbnails, $cateItems);
+                }
+                // Get out of the sticky zone -> reset
+                else if (!isInStickyPosition) {
+                    hasAnimatedHide = false;
+                    hasAnimatedShow = true;
+                }
+            }, 50);
+        }
+        
+        $(window).on('scroll', handleScroll);
         
         // Recalculate on resize
         $(window).on('resize', function() {
             if (!isMobile()) return;
             calculateHeights($list, $cateItems, $thumbnails);
+        });
+        
+        // Cleanup on page unload
+        $(window).on('beforeunload', function() {
+            if (scrollTimeout) clearTimeout(scrollTimeout);
+            if (clickScrollTimeout) clearTimeout(clickScrollTimeout);
         });
     }
     
@@ -75,6 +94,8 @@
     }
     
     function hideThumbnails($list, $thumbnails, $cateItems) {
+        if (isClickInteraction) return;
+        
         isAnimating = true;
         
         const timeline = gsap.timeline({
@@ -102,6 +123,11 @@
     }
     
     function showThumbnails($list, $thumbnails, $cateItems) {
+        if (isClickInteraction) {
+            // console.log('Blocked showThumbnails due to click interaction');
+            return;
+        }
+        
         isAnimating = true;
         
         const timeline = gsap.timeline({
@@ -128,10 +154,92 @@
             }, "-=0.2");
     }
 
+    function nktScrollWineItem() {
+        $('.cate-item').on('click', function(e) {
+            e.preventDefault();
+            
+            // Clear any existing click timeout
+            if (clickScrollTimeout) clearTimeout(clickScrollTimeout);
+            
+            
+            isClickInteraction = true;
+            
+            const $this = $(this);
+            const targetSection = $this.data('cate');
+            const $targetElement = $('#' + targetSection);
+            
+            if (!$targetElement.length) {
+                // Reset after 2 seconds if the target is not found.
+                clickScrollTimeout = setTimeout(() => {
+                    isClickInteraction = false;
+                    // console.log('Click interaction ended (no target)');
+                }, 2000);
+                return;
+            }
+            
+            const headerHeight = $('header').outerHeight() || 80;
+            const categoriesHeight = $('.nkt-list-categories__list').outerHeight() || 80;
+            const targetPosition = $targetElement.offset().top - headerHeight - categoriesHeight - 90;
+            
+            // Update active state trước
+            $('.cate-item').removeClass('active');
+            $this.addClass('active');
+            
+           
+            window.scrollTo({
+                top: targetPosition,
+                behavior: 'smooth'
+            });
+            
+            // LONGER BLOCK: Reset flag after scrolling is completely finished
+            // Calculate time based on scroll distance
+            const currentPosition = $(window).scrollTop();
+            const scrollDistance = Math.abs(targetPosition - currentPosition);
+            const estimatedScrollTime = Math.min(Math.max(scrollDistance / 1000, 1), 3) * 1000; // 1-3 giây
+            
+            // console.log(`Scroll distance: ${scrollDistance}px, Estimated time: ${estimatedScrollTime}ms`);
+            
+            clickScrollTimeout = setTimeout(() => {
+                isClickInteraction = false;
+                // console.log('Click interaction ended after scroll');
+            }, estimatedScrollTime + 1000); // Thêm 1 giây buffer
+        });
+    }
+
+    // Initialize when document is ready
     $(document).ready(function() {
         if (typeof gsap !== 'undefined') {
             initCategoryScroll();
+            nktScrollWineItem();
         }
     });
     
+    // Optional: Export functions for external control
+    window.categoryScroll = {
+        disable: function(duration = 5000) {
+            isClickInteraction = true;
+            setTimeout(() => {
+                isClickInteraction = false;
+            }, duration);
+        },
+        enable: function() {
+            isClickInteraction = false;
+            if (clickScrollTimeout) clearTimeout(clickScrollTimeout);
+        },
+        forceHide: function() {
+            if (!isMobile()) return;
+            const $list = $('.nkt-list-categories__list');
+            const $thumbnails = $('.cate-item__thumbnail');
+            const $cateItems = $('.cate-item');
+            hideThumbnails($list, $thumbnails, $cateItems);
+        },
+        getState: function() {
+            return {
+                isClickInteraction: isClickInteraction,
+                hasAnimatedHide: hasAnimatedHide,
+                hasAnimatedShow: hasAnimatedShow,
+                isAnimating: isAnimating
+            };
+        }
+    };
 })(jQuery);
