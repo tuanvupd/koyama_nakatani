@@ -6709,6 +6709,16 @@ body.logged-in .header-main .header-mobile-inner {
 .header-main .header-mobile .header-main__logo svg image {
   filter: brightness(0) invert(1);
 }
+.header-main .header-mobile .cta-booking-menu-mb {
+  width: 100%;
+  text-decoration: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 16px;
+  font-size: 16px;
+  line-height: 125%;
+  font-weight: 500;
+  color: #fff;
+}
 .header-main__language .language-switcher {
   position: relative;
   width: 95px;

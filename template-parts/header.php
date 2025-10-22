@@ -90,6 +90,12 @@
                 <div class="header-main__language"> 
                     <?php echo nkt_language_switcher_mobile(); ?>
                 </div>
+
+                <?php if(!empty($button)): ?>
+                    <div class="cta-booking-menu-mb d-md-none d-flex flex-wrap btn-open-modal-book">
+                        <?= $button ?>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
