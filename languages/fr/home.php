@@ -30,7 +30,7 @@ return [
         'label'       => 'Carte des Vins',
         'origin_note' => 'Carte des Vins Restaurant NAKATANI',
         'btnText'     => 'Voir plus',
-        'btnLink'     => '/wine',
+        'btnLink'     => 'wine',
     ]
   ],
   'profile' => [
