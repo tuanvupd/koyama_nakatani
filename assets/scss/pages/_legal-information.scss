@@ -1,0 +1,54 @@
+
+main.legal-information-page{
+
+    .ntk-hero{
+        padding-top: 100px;
+
+        .container{
+            max-width: 1000px;
+        }
+
+        h1{
+            font-size: 48.45px;
+            color:#817771;
+            margin: 0;
+            line-height: 1.5;
+            font-family: $font-primary;
+        }
+
+        .sub-heading{
+            margin: 30px 0 20px 0;
+            font-size: 16px;
+            line-height: 1.5;
+            font-family: $font-second;
+            color:#59493f;
+            text-transform: uppercase;
+        }
+
+        .group-content{
+            &:not(:first-child){
+                margin-top: 80px;
+            }
+            
+            h2, p{
+                font-size: 16px;
+                line-height: 1.5;
+                font-family: $font-second;
+                color:#59493f;
+                letter-spacing: 0.06em;
+            }
+
+            h2{
+                font-weight: 700;
+                margin: 0 0 60px 0;
+            }
+
+            p{
+                margin-bottom: 8px;
+                &:last-child{
+                    margin-bottom: 0;
+                }
+            }
+        }
+    }
+}

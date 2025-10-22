@@ -8286,6 +8286,48 @@ main.wine-page .nkt-wines .cate-group__types .type-group__wines .wine-item p.vin
   }
 }
 
+main.legal-information-page .ntk-hero {
+  padding-top: 100px;
+}
+main.legal-information-page .ntk-hero .container {
+  max-width: 1000px;
+}
+main.legal-information-page .ntk-hero h1, main.legal-information-page .ntk-hero .h1 {
+  font-size: 48.45px;
+  color: #817771;
+  margin: 0;
+  line-height: 1.5;
+  font-family: "Noto Serif JP", serif;
+}
+main.legal-information-page .ntk-hero .sub-heading {
+  margin: 30px 0 20px 0;
+  font-size: 16px;
+  line-height: 1.5;
+  font-family: "Noto Sans JP", sans-serif;
+  color: #59493f;
+  text-transform: uppercase;
+}
+main.legal-information-page .ntk-hero .group-content:not(:first-child) {
+  margin-top: 80px;
+}
+main.legal-information-page .ntk-hero .group-content h2, main.legal-information-page .ntk-hero .group-content .h2, main.legal-information-page .ntk-hero .group-content p {
+  font-size: 16px;
+  line-height: 1.5;
+  font-family: "Noto Sans JP", sans-serif;
+  color: #59493f;
+  letter-spacing: 0.06em;
+}
+main.legal-information-page .ntk-hero .group-content h2, main.legal-information-page .ntk-hero .group-content .h2 {
+  font-weight: 700;
+  margin: 0 0 60px 0;
+}
+main.legal-information-page .ntk-hero .group-content p {
+  margin-bottom: 8px;
+}
+main.legal-information-page .ntk-hero .group-content p:last-child {
+  margin-bottom: 0;
+}
+
 .error404 .site-main {
   padding-top: 20vh;
   padding-bottom: 20vh;
