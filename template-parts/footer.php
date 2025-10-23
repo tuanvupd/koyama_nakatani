@@ -192,7 +192,7 @@
 
             <?php if(!empty($sub_text)): ?>
                 <div class="main-footer_sub-text"> 
-                    <a href="<?= home_url('/legal-information/') ?>" class="legal-link"><?= $sub_text ?> </a>
+                    <a href="<?= home_url('/legal-information/') ?>" class="legal-link" style="color: #fff !important; text-decoration: none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'"><?= $sub_text ?> </a>
                 </div>
             <?php endif;?>  
 
