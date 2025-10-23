@@ -6538,10 +6538,13 @@ body.logged-in .header-main {
     padding-left: 20px;
   }
 }
+.header-main__logo img, .header-main__logo svg {
+  width: 100%;
+  height: auto;
+  max-width: 190px;
+}
 @media (max-width: 991.98px) {
   .header-main__logo img, .header-main__logo svg {
-    width: 100%;
-    height: auto;
     max-width: 150px;
   }
 }
@@ -8283,6 +8286,14 @@ main.wine-page .nkt-wines .cate-group__types .type-group__wines .wine-item p.vin
   main.wine-page .nkt-wines .cate-group__types .type-group__wines .wine-item p.vintage {
     min-width: 36px;
     width: 36px;
+  }
+}
+@media (min-width: 768px) {
+  main.wine-page .nkt-wines .cate-group#cate-group-la-vallee-du-rhone-blanc .cate-group-top, main.wine-page .nkt-wines .cate-group#cate-group-bordeaux-blancs .cate-group-top {
+    min-height: 320px;
+  }
+  main.wine-page .nkt-wines .cate-group#cate-group-la-vallee-du-rhone-blanc .cate-group__types, main.wine-page .nkt-wines .cate-group#cate-group-bordeaux-blancs .cate-group__types {
+    margin-top: -115px;
   }
 }
 

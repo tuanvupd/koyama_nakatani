@@ -185,5 +185,17 @@
                 }
             }
         }
+
+        &#cate-group-la-vallee-du-rhone-blanc, &#cate-group-bordeaux-blancs{
+            @media (min-width: 768px) {
+                .cate-group-top{
+                    min-height: 320px;
+                }
+
+                .cate-group__types{
+                    margin-top: -115px;
+                }
+            }
+        }
     }
 }
