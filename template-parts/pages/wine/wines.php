@@ -14,13 +14,30 @@ $wine_categories = get_terms([
     </section>    
 <?php endif; ?>
 
-<?php function ntk_group_cate_post($category){ 
+<?php 
+function ntk_group_cate_post($category) { 
     $image    = get_field('bg_cate_wine', 'category-wine_' . $category->term_id);
-    $bg_style = $image ? 'background-image: url(' . esc_url($image) . ')' : 'background-color: #5d442c';
+    $image_mb = get_field('bg_cate_wine_mb', 'category-wine_' . $category->term_id);
+    $bg_mb = !empty($image_mb) ? $image_mb : $image;
+
     $classed  = $image ? 'nkt-bg-image' : '';
-?>
-    <div id="cate-group-<?= esc_attr($category->slug) ?>" class="cate-group"> 
-        <div class="cate-group-top <?php echo esc_attr($classed); ?>" style="<?php echo esc_attr($bg_style); ?>"> 
+    $bg_style = $image 
+        ? 'background-image: url(' . esc_url($image) . ');' 
+        : 'background-color: #5d442c;';
+
+    $id = 'cate-group-' . esc_attr($category->slug);
+    ?>
+
+    <style>
+        @media (max-width: 768px) {
+            #<?= $id ?> .cate-group-top {
+                background-image: url('<?= esc_url($bg_mb) ?>') !important;
+            }
+        }
+    </style>
+
+    <div id="<?= $id ?>" class="cate-group"> 
+        <div class="cate-group-top <?= esc_attr($classed) ?>" style="<?= $bg_style ?>"> 
             <h2 id="section-<?php echo esc_attr($category->slug); ?>" class="text-center">
                 <?php echo esc_html($category->name); ?>
             </h2>
