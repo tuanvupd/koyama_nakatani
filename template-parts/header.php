@@ -11,7 +11,7 @@
                 if ($logo_url && str_ends_with($logo_url, '.svg')) {
                     $svg_path = get_attached_file($custom_logo_id);
                     if (file_exists($svg_path)) {
-                        echo '<a href="/" class="custom-logo-link">';
+                        echo '<a href="'. home_url('/') .'" class="custom-logo-link">';
                         echo file_get_contents($svg_path);
                         echo '</a>';
                     }
