@@ -30,7 +30,7 @@ return [
          'label'       => 'Seller Book',
          'origin_note' => 'Restaurant NAKATANI Seller Book',
          'btnText'     => 'View more',
-         'btnLink'     => '/wine',
+         'btnLink'     => 'wine',
       ]
    ],
    'profile' => [
