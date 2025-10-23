@@ -191,7 +191,9 @@
             </div>
 
             <?php if(!empty($sub_text)): ?>
-                <div class="main-footer_sub-text"> <?= $sub_text ?> </div>
+                <div class="main-footer_sub-text"> 
+                    <a href="<?= home_url('/legal-information/') ?>" class="legal-link"><?= $sub_text ?> </a>
+                </div>
             <?php endif;?>  
 
             <?php if ($copyright) { ?>
