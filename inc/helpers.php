@@ -186,7 +186,7 @@ function nkt_language_switcher() {
     $output = '<div class="language-switcher d-flex flex-wrap">';
     
     
-    $output .= '<div class="current-language-item w-100 d-sm-flex d-none">';
+    $output .= '<div class="current-language-item w-100 d-flex">';
     $output .= '<span class="current-language">' . $current_language_name . '</span>';
     $output .= '<span class="dropdown-arrow"></span>';
     $output .= '</div>';

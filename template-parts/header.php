@@ -34,6 +34,10 @@
                     </div>
                 <?php endif; ?>
 
+                <div class="header-main__language language-switcher-desktop"> 
+                    <?php echo nkt_language_switcher(); ?>
+                </div>
+
                 <div class="btn-open-menu d-md-none d-flex flex-wrap"> 
                     <span class="line">  </span>
                     <span class="line">  </span>
@@ -46,7 +50,7 @@
                     <?php get_template_part('template-parts/menu-content') ?>
                 </div>   
 
-                <div class="header-main__language"> 
+                <div class="header-main__language language-switcher-desktop"> 
                     <?php echo nkt_language_switcher(); ?>
                 </div>
             </div>

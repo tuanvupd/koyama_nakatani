@@ -21,10 +21,6 @@
             'desktop' => '/assets/images/home/img-hm-slider-005-min.jpg',
             'mobile'  => '/assets/images/home/img-hm-slider-mb-005-min.jpg'
         ],
-        [
-            'desktop' => '/assets/images/home/img-hm-slider-006-min.jpg',
-            'mobile'  => '/assets/images/home/img-hm-slider-mb-006-min.jpg'
-        ],
     ]
 ?>
 <section class="nkt-hero section-fixed">
