@@ -6520,6 +6520,11 @@ img {
   max-width: 100%;
   transition: all 0.3s ease;
 }
+@media (max-width: 767.98px) {
+  .header-main {
+    padding-top: 0;
+  }
+}
 .header-main .container-fluid, .header-main .container-sm, .header-main .container-md, .header-main .container-lg, .header-main .container-xl {
   display: flex;
   flex-wrap: wrap;
@@ -6536,6 +6541,7 @@ body.logged-in .header-main {
 @media (max-width: 767.98px) {
   .header-main__logo {
     padding-left: 20px;
+    padding-top: 5px;
   }
 }
 .header-main__logo img, .header-main__logo svg {
@@ -6672,6 +6678,11 @@ body.logged-in .header-main {
   height: 41px;
   align-items: center;
 }
+@media (max-width: 767.98px) {
+  .header-main .cta-booking {
+    margin-top: 5px;
+  }
+}
 .header-main .header-mobile {
   position: fixed;
   width: 100%;
@@ -6700,11 +6711,14 @@ body.logged-in .header-main {
   transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s ease, z-index 0s 0s;
 }
 .header-main .header-mobile-inner {
-  padding-top: 32px;
+  padding-top: 0px;
   padding-bottom: 32px;
 }
 body.logged-in .header-main .header-mobile-inner {
   padding-top: 78px;
+}
+.header-main .header-mobile .header-main__logo {
+  padding-top: 10px;
 }
 .header-main .header-mobile .header-main__logo svg {
   filter: brightness(0) invert(1);
