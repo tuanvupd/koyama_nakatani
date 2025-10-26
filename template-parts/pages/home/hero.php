@@ -45,7 +45,7 @@
             <?php endif;?>    
 
             <div class="nkt-hero__logo text-center"> 
-                <img src="<?= TEMPLATE_DIRECTORY_URL ?>/assets/images/home/logo-footer-mIN.png" alt="logo site on hero"/>
+                <img src="<?= TEMPLATE_DIRECTORY_URL ?>/assets/images/logo_fv_footer.webp" alt="logo site on hero"/>
             </div>
         </div>
     </div>
