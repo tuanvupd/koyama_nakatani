@@ -6559,13 +6559,17 @@ body.logged-in .header-main {
   }
 }
 .header-main-right {
-  gap: 40px;
+  gap: 24px;
   width: calc(100% - 186px - 0.5rem);
 }
 @media (max-width: 1023.98px) {
   .header-main-right {
-    gap: 24px;
+    gap: 12px;
   }
+}
+.header-main-right .cta-booking {
+  flex-shrink: 0;
+  height: 44px !important;
 }
 .header-main__nav ul {
   gap: 40px;
@@ -6702,6 +6706,9 @@ body.logged-in .header-main {
   justify-content: center;
   height: 41px;
   align-items: center;
+}
+.header-main .cta-booking:hover {
+  transform: translateY(0px);
 }
 .header-main .header-mobile {
   position: fixed;

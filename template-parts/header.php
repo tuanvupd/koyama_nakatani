@@ -50,6 +50,12 @@
                     <?php get_template_part('template-parts/menu-content') ?>
                 </div>   
 
+                <?php if(!empty($button)): ?>
+                    <div class="cta-booking d-flex flex-wrap btn-open-modal-book">
+                        <?= $button ?>
+                    </div>
+                <?php endif; ?>
+
                 <div class="header-main__language language-switcher-desktop"> 
                     <?php echo nkt_language_switcher(); ?>
                 </div>

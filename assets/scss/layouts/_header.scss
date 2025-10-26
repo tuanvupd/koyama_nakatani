@@ -50,10 +50,16 @@
     }
 
     &-right{
-        gap: 40px;
+        gap: 24px;
         width: calc(100% - 186px - 0.5rem);
+
         @media (max-width: 1023.98px){
-            gap:24px;
+            gap: 12px;
+        }
+
+        .cta-booking{
+            flex-shrink: 0;
+            height: 44px !important;
         }
     }
 
@@ -211,6 +217,10 @@
         justify-content: center;
         height: 41px;
         align-items: center;
+
+        &:hover {
+            transform: translateY(0px);
+        }
 
         // @media (max-width: 767.98px) {
         //     margin-top: 5px;
