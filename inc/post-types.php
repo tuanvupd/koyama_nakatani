@@ -133,27 +133,47 @@ add_action('pre_get_posts', function($query) {
 		return;
 	}
 	
-	// Get filter values
-	$category_filter = isset($_GET['category-wine']) ? absint($_GET['category-wine']) : 0;
-	$type_filter = isset($_GET['type-wine']) ? absint($_GET['type-wine']) : 0;
+	// Get filter values - support both ID and slug
+	$category_filter = isset($_GET['category-wine']) ? $_GET['category-wine'] : '';
+	$type_filter = isset($_GET['type-wine']) ? $_GET['type-wine'] : '';
 	
 	// Build tax_query
 	$tax_query = array();
 	
-	if ($category_filter > 0) {
-		$tax_query[] = array(
-			'taxonomy' => 'category-wine',
-			'field' => 'term_id',
-			'terms' => $category_filter,
-		);
+	if (!empty($category_filter)) {
+		// Check if it's a number (ID) or slug
+		if (is_numeric($category_filter) && $category_filter > 0) {
+			$tax_query[] = array(
+				'taxonomy' => 'category-wine',
+				'field' => 'term_id',
+				'terms' => absint($category_filter),
+			);
+		} else {
+			// It's a slug
+			$tax_query[] = array(
+				'taxonomy' => 'category-wine',
+				'field' => 'slug',
+				'terms' => $category_filter,
+			);
+		}
 	}
 	
-	if ($type_filter > 0) {
-		$tax_query[] = array(
-			'taxonomy' => 'type-wine',
-			'field' => 'term_id',
-			'terms' => $type_filter,
-		);
+	if (!empty($type_filter)) {
+		// Check if it's a number (ID) or slug
+		if (is_numeric($type_filter) && $type_filter > 0) {
+			$tax_query[] = array(
+				'taxonomy' => 'type-wine',
+				'field' => 'term_id',
+				'terms' => absint($type_filter),
+			);
+		} else {
+			// It's a slug
+			$tax_query[] = array(
+				'taxonomy' => 'type-wine',
+				'field' => 'slug',
+				'terms' => $type_filter,
+			);
+		}
 	}
 	
 	// Apply tax_query if we have filters
@@ -164,9 +184,11 @@ add_action('pre_get_posts', function($query) {
 		$query->set('tax_query', $tax_query);
 	}
 	
-	// Add menu_order support for drag-drop sorting
-	$query->set('orderby', 'menu_order');
-	$query->set('order', 'ASC');
+	// Add menu_order support for drag-drop sorting (only when no custom order is set)
+	if (!$query->get('orderby')) {
+		$query->set('orderby', 'menu_order');
+		$query->set('order', 'ASC');
+	}
 });
 
 // Enable simple page ordering for wine posts
