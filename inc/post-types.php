@@ -97,86 +97,77 @@ if (!function_exists('nakatani_create_custom_taxonomy')) {
 }
 
 // Add filter dropdown for categories and types on admin post list
-if (!function_exists('nakatani_add_admin_filters')) {
-	function nakatani_add_admin_filters() {
-		global $typenow;
+add_action('restrict_manage_posts', function() {
+	global $typenow;
+	
+	// Only add filters for 'wine' post type
+	if ($typenow == 'wine') {
+		// Filter by Category
+		wp_dropdown_categories(array(
+			'show_option_all' => 'All Categories',
+			'taxonomy' => 'category-wine',
+			'name' => 'category-wine',
+			'selected' => isset($_GET['category-wine']) ? $_GET['category-wine'] : 0,
+			'hierarchical' => true,
+			'depth' => 3,
+			'show_count' => false,
+		));
 		
-		// Only add filters for 'wine' post type
-		if ($typenow == 'wine') {
-			// Filter by Category
-			$selected = isset($_GET['category-wine']) ? $_GET['category-wine'] : '';
-			$category_args = array(
-				'show_option_all' => 'All Categories',
-				'taxonomy' => 'category-wine',
-				'name' => 'category-wine',
-				'selected' => $selected,
-			);
-			wp_dropdown_categories($category_args);
-			
-			// Filter by Type
-			$selected_type = isset($_GET['type-wine']) ? $_GET['type-wine'] : '';
-			$type_args = array(
-				'show_option_all' => 'All Types',
-				'taxonomy' => 'type-wine',
-				'name' => 'type-wine',
-				'selected' => $selected_type,
-			);
-			wp_dropdown_categories($type_args);
-		}
+		// Filter by Type
+		wp_dropdown_categories(array(
+			'show_option_all' => 'All Types',
+			'taxonomy' => 'type-wine',
+			'name' => 'type-wine',
+			'selected' => isset($_GET['type-wine']) ? $_GET['type-wine'] : 0,
+			'hierarchical' => true,
+			'depth' => 3,
+			'show_count' => false,
+		));
 	}
-	add_action('restrict_manage_posts', 'nakatani_add_admin_filters');
-}
+});
 
 // Apply filter query
-if (!function_exists('nakatani_filter_admin_posts')) {
-	function nakatani_filter_admin_posts($query) {
-		global $pagenow, $typenow;
-		
-		// Only run on admin post list page
-		if (!is_admin() || $pagenow != 'edit.php' || $typenow != 'wine') {
-			return;
-		}
-		
-		// Check if filter buttons were clicked
-		if (!isset($_GET['filter_action'])) {
-			return;
-		}
-		
-		// Get filter values
-		$category_filter = isset($_GET['category-wine']) ? intval($_GET['category-wine']) : 0;
-		$type_filter = isset($_GET['type-wine']) ? intval($_GET['type-wine']) : 0;
-		
-		// Don't do anything if both are 0 or unset
-		if ($category_filter <= 0 && $type_filter <= 0) {
-			return;
-		}
-		
-		// Build tax_query
-		$tax_query = array();
-		
-		if ($category_filter > 0) {
-			$tax_query[] = array(
-				'taxonomy' => 'category-wine',
-				'field' => 'term_id',
-				'terms' => $category_filter,
-			);
-		}
-		
-		if ($type_filter > 0) {
-			$tax_query[] = array(
-				'taxonomy' => 'type-wine',
-				'field' => 'term_id',
-				'terms' => $type_filter,
-			);
-		}
-		
-		// Set relation if multiple filters
-		if (count($tax_query) > 1) {
-			$tax_query['relation'] = 'AND';
-		}
-		
-		// Apply the tax_query
-		$query->set('tax_query', $tax_query);
+add_action('parse_query', function($query) {
+	global $pagenow, $typenow;
+	
+	// Only run on admin post list page
+	if (!is_admin() || $pagenow != 'edit.php' || $typenow != 'wine') {
+		return;
 	}
-	add_action('pre_get_posts', 'nakatani_filter_admin_posts');
-}
+	
+	// Get filter values
+	$category_filter = isset($_GET['category-wine']) ? intval($_GET['category-wine']) : 0;
+	$type_filter = isset($_GET['type-wine']) ? intval($_GET['type-wine']) : 0;
+	
+	// Don't do anything if both are 0 or unset
+	if ($category_filter <= 0 && $type_filter <= 0) {
+		return;
+	}
+	
+	// Build tax_query
+	$tax_query = array();
+	
+	if ($category_filter > 0) {
+		$tax_query[] = array(
+			'taxonomy' => 'category-wine',
+			'field' => 'term_id',
+			'terms' => array($category_filter),
+		);
+	}
+	
+	if ($type_filter > 0) {
+		$tax_query[] = array(
+			'taxonomy' => 'type-wine',
+			'field' => 'term_id',
+			'terms' => array($type_filter),
+		);
+	}
+	
+	// Set relation if multiple filters
+	if (count($tax_query) > 1) {
+		$tax_query['relation'] = 'AND';
+	}
+	
+	// Apply the tax_query
+	$query->query_vars['tax_query'] = $tax_query;
+});
