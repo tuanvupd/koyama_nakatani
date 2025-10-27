@@ -121,25 +121,21 @@ function nkt_menu_item($key) {
     $path  = $menu_item[1] ?? '#';
     $href = preg_match('#^https?://#i', $path) ? $path : home_url($path);
 
-    // get current url
-    global $wp;
     $current_url = home_url($_SERVER['REQUEST_URI']);
-
-    $normalize = static function ($url) {
-        $url = strtok($url, '?'); // Only remove the query string (?), KEEP the hash (#)
-        return strtolower( rtrim($url, '/') );
-    };
-
-    // Only check active for non-hash links
+    
     $is_active = false;
     
-    // If the href does NOT contain a hash (#), then check.
+    // Only check active for non-hash links
     if (strpos($href, '#') === false) {
-        $is_active = ($normalize($href) === $normalize($current_url));
+        $current_clean = untrailingslashit($current_url);
+        $href_clean = untrailingslashit($href);
         
-        // check home
-        if (!$is_active && is_front_page()) {
-            $is_active = ($normalize($href) === $normalize(home_url('/')));
+        // For home page, only exact match
+        if (is_front_page() || is_home()) {
+            $is_active = ($href_clean === untrailingslashit(home_url('/')));
+        } else {
+            // For other pages, compare clean URLs
+            $is_active = ($href_clean === $current_clean);
         }
     }
 

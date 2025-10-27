@@ -5,13 +5,14 @@
     top:0;
     clear: right;
     width: 100%;
-    // background: #fff;
+    background: linear-gradient(to bottom, #e8e8e8 0%, #ffffff 50%, #e8e8e8 100%);
+    background: linear-gradient(to bottom, #ffffff 0%, #f5f5f5 100%);
     z-index: 99999;
     max-width: 100%;
     transition: all 0.3s ease;
 
     @media (max-width: 767.98px) {
-        padding-top: 0;
+        padding: 0;
     }
 
     .container-fluid{
