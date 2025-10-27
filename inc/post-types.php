@@ -132,35 +132,49 @@ if (!function_exists('nakatani_filter_admin_posts')) {
 	function nakatani_filter_admin_posts($query) {
 		global $pagenow, $typenow;
 		
-		if ($pagenow == 'edit.php' && $typenow == 'wine' && is_admin()) {
-			$tax_query = array();
-			
-			// Filter by Category
-			if (isset($_GET['category-wine']) && $_GET['category-wine'] != '' && $_GET['category-wine'] != '0' && $_GET['category-wine'] > 0) {
-				$tax_query[] = array(
-					'taxonomy' => 'category-wine',
-					'field' => 'term_id',
-					'terms' => intval($_GET['category-wine']),
-				);
-			}
-			
-			// Filter by Type
-			if (isset($_GET['type-wine']) && $_GET['type-wine'] != '' && $_GET['type-wine'] != '0' && $_GET['type-wine'] > 0) {
-				$tax_query[] = array(
-					'taxonomy' => 'type-wine',
-					'field' => 'term_id',
-					'terms' => intval($_GET['type-wine']),
-				);
-			}
-			
-			// Only set tax_query if we have filters
-			if (!empty($tax_query)) {
-				if (count($tax_query) > 1) {
-					$tax_query['relation'] = 'AND';
-				}
-				$query->query_vars['tax_query'] = $tax_query;
-			}
+		if (!is_admin()) {
+			return;
 		}
+		
+		if ($pagenow != 'edit.php' || $typenow != 'wine') {
+			return;
+		}
+		
+		// Check if we have filter parameters
+		$has_category_filter = isset($_GET['category-wine']) && $_GET['category-wine'] != '' && $_GET['category-wine'] != '0' && $_GET['category-wine'] > 0;
+		$has_type_filter = isset($_GET['type-wine']) && $_GET['type-wine'] != '' && $_GET['type-wine'] != '0' && $_GET['type-wine'] > 0;
+		
+		if (!$has_category_filter && !$has_type_filter) {
+			return;
+		}
+		
+		// Build tax_query
+		$tax_query = array();
+		
+		// Filter by Category
+		if ($has_category_filter) {
+			$tax_query[] = array(
+				'taxonomy' => 'category-wine',
+				'field' => 'term_id',
+				'terms' => intval($_GET['category-wine']),
+			);
+		}
+		
+		// Filter by Type
+		if ($has_type_filter) {
+			$tax_query[] = array(
+				'taxonomy' => 'type-wine',
+				'field' => 'term_id',
+				'terms' => intval($_GET['type-wine']),
+			);
+		}
+		
+		// Set relation if multiple filters
+		if (count($tax_query) > 1) {
+			$tax_query['relation'] = 'AND';
+		}
+		
+		$query->set('tax_query', $tax_query);
 	}
 	add_action('parse_query', 'nakatani_filter_admin_posts');
 }
