@@ -100,27 +100,41 @@ add_action('restrict_manage_posts', function() {
 	
 	// Only add filters for 'wine' post type
 	if ($typenow == 'wine') {
-		// Filter by Category
-		wp_dropdown_categories(array(
-			'show_option_all' => 'All Categories',
+		// Get selected values
+		$selected_category = isset($_GET['category-wine']) ? $_GET['category-wine'] : '';
+		$selected_type = isset($_GET['type-wine']) ? $_GET['type-wine'] : '';
+		
+		// Filter by Category - custom dropdown with slugs
+		$categories = get_terms(array(
 			'taxonomy' => 'category-wine',
-			'name' => 'category-wine',
-			'selected' => isset($_GET['category-wine']) ? $_GET['category-wine'] : 0,
-			'hierarchical' => true,
-			'depth' => 3,
-			'show_count' => false,
+			'hide_empty' => false,
 		));
 		
-		// Filter by Type
-		wp_dropdown_categories(array(
-			'show_option_all' => 'All Types',
+		if (!is_wp_error($categories) && !empty($categories)) {
+			echo '<select name="category-wine" id="category-wine" class="postform">';
+			echo '<option value="">All Categories</option>';
+			foreach ($categories as $category) {
+				$selected = ($selected_category == $category->slug) ? ' selected="selected"' : '';
+				echo '<option value="' . esc_attr($category->slug) . '"' . $selected . '>' . esc_html($category->name) . '</option>';
+			}
+			echo '</select>';
+		}
+		
+		// Filter by Type - custom dropdown with slugs
+		$types = get_terms(array(
 			'taxonomy' => 'type-wine',
-			'name' => 'type-wine',
-			'selected' => isset($_GET['type-wine']) ? $_GET['type-wine'] : 0,
-			'hierarchical' => true,
-			'depth' => 3,
-			'show_count' => false,
+			'hide_empty' => false,
 		));
+		
+		if (!is_wp_error($types) && !empty($types)) {
+			echo '<select name="type-wine" id="type-wine" class="postform">';
+			echo '<option value="">All Types</option>';
+			foreach ($types as $type) {
+				$selected = ($selected_type == $type->slug) ? ' selected="selected"' : '';
+				echo '<option value="' . esc_attr($type->slug) . '"' . $selected . '>' . esc_html($type->name) . '</option>';
+			}
+			echo '</select>';
+		}
 	}
 });
 
