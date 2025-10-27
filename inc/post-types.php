@@ -125,12 +125,12 @@ add_action('restrict_manage_posts', function() {
 });
 
 // Apply filter query
-add_action('pre_get_posts', function($query) {
+add_action('request', function($vars) {
 	global $pagenow;
 	
 	// Only run on admin post list page for wine post type
 	if (!is_admin() || $pagenow != 'edit.php' || !isset($_GET['post_type']) || $_GET['post_type'] != 'wine') {
-		return;
+		return $vars;
 	}
 	
 	// Get filter values
@@ -161,12 +161,10 @@ add_action('pre_get_posts', function($query) {
 		if (count($tax_query) > 1) {
 			$tax_query['relation'] = 'AND';
 		}
-		$query->set('tax_query', $tax_query);
+		$vars['tax_query'] = $tax_query;
 	}
 	
-	// Add menu_order support for drag-drop sorting
-	$query->set('orderby', 'menu_order');
-	$query->set('order', 'ASC');
+	return $vars;
 });
 
 // Enable simple page ordering for wine posts
