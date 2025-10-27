@@ -132,23 +132,33 @@ if (!function_exists('nakatani_filter_admin_posts')) {
 	function nakatani_filter_admin_posts($query) {
 		global $pagenow, $typenow;
 		
-		if ($pagenow == 'edit.php' && $typenow == 'wine' && is_admin()) {
+		if ($pagenow == 'edit.php' && $typenow == 'wine' && is_admin() && $query->is_main_query()) {
+			$tax_query = array();
+			
 			// Filter by Category
-			if (isset($_GET['category-wine']) && $_GET['category-wine'] != '') {
-				$query->query_vars['tax_query'][] = array(
+			if (isset($_GET['category-wine']) && $_GET['category-wine'] != '' && $_GET['category-wine'] != '0') {
+				$tax_query[] = array(
 					'taxonomy' => 'category-wine',
 					'field' => 'term_id',
-					'terms' => $_GET['category-wine'],
+					'terms' => intval($_GET['category-wine']),
 				);
 			}
 			
 			// Filter by Type
-			if (isset($_GET['type-wine']) && $_GET['type-wine'] != '') {
-				$query->query_vars['tax_query'][] = array(
+			if (isset($_GET['type-wine']) && $_GET['type-wine'] != '' && $_GET['type-wine'] != '0') {
+				$tax_query[] = array(
 					'taxonomy' => 'type-wine',
 					'field' => 'term_id',
-					'terms' => $_GET['type-wine'],
+					'terms' => intval($_GET['type-wine']),
 				);
+			}
+			
+			// Only set tax_query if we have filters
+			if (!empty($tax_query)) {
+				if (count($tax_query) > 1) {
+					$tax_query['relation'] = 'AND';
+				}
+				$query->set('tax_query', $tax_query);
 			}
 		}
 	}
