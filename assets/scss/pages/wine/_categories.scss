@@ -248,6 +248,16 @@
             &__thumbnail {
                 transform-origin: center bottom;
                 will-change: transform, opacity, margin-bottom;
+
+                @media (min-width: 768px){
+                    height: auto !important;
+                    opacity: 1 !important;
+                    translate: none;
+                    rotate: none;
+                    scale: none;
+                    margin-bottom: 0px;
+                    transform: scale(1, 1) !important;
+                }
             }
             
             &__title, &__arrow {
