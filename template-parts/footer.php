@@ -58,19 +58,6 @@
                             </div>
                         <?php endif; ?>  
 
-                        <?php if(!empty($fax)): ?>
-                            <div class="<?=  $classed ?> fax"> 
-                                <div class="info-item__title">
-                                    <span></span>
-                                    <p>Fax</p>
-                                </div>
-
-                                <p class="info-item__content"> 
-                                    <?= $fax ?>
-                                </p>
-                            </div>
-                        <?php endif; ?> 
-
                         <?php if(!empty($email)): ?>
                             <div class="<?=  $classed ?> email"> 
                                 <div class="info-item__title">
