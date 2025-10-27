@@ -132,40 +132,41 @@ if (!function_exists('nakatani_filter_admin_posts')) {
 	function nakatani_filter_admin_posts($query) {
 		global $pagenow, $typenow;
 		
-		if (!is_admin()) {
+		// Only run on admin post list page
+		if (!is_admin() || $pagenow != 'edit.php' || $typenow != 'wine') {
 			return;
 		}
 		
-		if ($pagenow != 'edit.php' || $typenow != 'wine') {
+		// Check if filter buttons were clicked
+		if (!isset($_GET['filter_action'])) {
 			return;
 		}
 		
-		// Check if we have filter parameters
-		$has_category_filter = isset($_GET['category-wine']) && $_GET['category-wine'] != '' && $_GET['category-wine'] != '0' && $_GET['category-wine'] > 0;
-		$has_type_filter = isset($_GET['type-wine']) && $_GET['type-wine'] != '' && $_GET['type-wine'] != '0' && $_GET['type-wine'] > 0;
+		// Get filter values
+		$category_filter = isset($_GET['category-wine']) ? intval($_GET['category-wine']) : 0;
+		$type_filter = isset($_GET['type-wine']) ? intval($_GET['type-wine']) : 0;
 		
-		if (!$has_category_filter && !$has_type_filter) {
+		// Don't do anything if both are 0 or unset
+		if ($category_filter <= 0 && $type_filter <= 0) {
 			return;
 		}
 		
 		// Build tax_query
 		$tax_query = array();
 		
-		// Filter by Category
-		if ($has_category_filter) {
+		if ($category_filter > 0) {
 			$tax_query[] = array(
 				'taxonomy' => 'category-wine',
 				'field' => 'term_id',
-				'terms' => intval($_GET['category-wine']),
+				'terms' => $category_filter,
 			);
 		}
 		
-		// Filter by Type
-		if ($has_type_filter) {
+		if ($type_filter > 0) {
 			$tax_query[] = array(
 				'taxonomy' => 'type-wine',
 				'field' => 'term_id',
-				'terms' => intval($_GET['type-wine']),
+				'terms' => $type_filter,
 			);
 		}
 		
@@ -174,7 +175,8 @@ if (!function_exists('nakatani_filter_admin_posts')) {
 			$tax_query['relation'] = 'AND';
 		}
 		
+		// Apply the tax_query
 		$query->set('tax_query', $tax_query);
 	}
-	add_action('parse_query', 'nakatani_filter_admin_posts');
+	add_action('pre_get_posts', 'nakatani_filter_admin_posts');
 }
