@@ -6516,8 +6516,7 @@ img {
   top: 0;
   clear: right;
   width: 100%;
-  background: linear-gradient(to bottom, #e8e8e8 0%, #ffffff 50%, #e8e8e8 100%);
-  background: linear-gradient(to bottom, #ffffff 0%, #f5f5f5 100%);
+  background: linear-gradient(to bottom, rgb(255, 255, 255) 0%, rgb(255, 255, 255) 40%, rgba(255, 255, 255, 0) 100%);
   z-index: 99999;
   max-width: 100%;
   transition: all 0.3s ease;
@@ -7828,6 +7827,12 @@ body.logged-in .header-main .header-mobile-inner {
 @media (max-width: 767.98px) {
   .template-home .nkt-profile__content .bio-group {
     margin: 20px 0;
+  }
+}
+
+@media (max-width: 767.98px) {
+  body.has-sticky .header-main {
+    background: #fff;
   }
 }
 

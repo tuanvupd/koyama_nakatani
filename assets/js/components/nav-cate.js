@@ -1,126 +1,149 @@
-/**
- * NKT Wine Categories – Mobile Scroll/Click Animation (jQuery + GSAP)
- * Version: sticky-toggle aware
- *
- * Core:
- *  - Không cache originalHeight (đo động bằng scrollHeight)
- *  - JIT minimizedHeight mỗi lần hide
- *  - Show: tween tới scrollHeight rồi clearProps('height')
- *  - Tôn trọng prefers-reduced-motion
- *  - Recalc thông minh khi ảnh/DOM/resize thay đổi (ResizeObserver/MutationObserver)
- *  - Click scroll: unlock theo vị trí + fallback
- *
- * NEW (theo yêu cầu):
- *  - Dùng debounce + toggleClass('has-sticky', isSticky) như code của bạn
- *  - Ngay khoảnh khắc remove has-sticky khi cuộn lên (sticky -> non-sticky, hướng up) => show full cates
- */
-
 (function ($) {
   'use strict';
 
-  // ===== Debounce helper (nếu bạn đã có rồi thì có thể bỏ) =====
-  function debounce(fn, wait) {
-    let t;
-    return function () {
-      const ctx = this, args = arguments;
-      clearTimeout(t);
-      t = setTimeout(function () {
-        fn.apply(ctx, args);
-      }, wait);
-    };
-  }
-
-  // ===== Runtime State =====
-  let hasAnimatedHide = false;
-  let hasAnimatedShow = true;
-  let isAnimating = false;
-  let minimizedHeight = 0;
-  let isClickInteraction = false;
-  let clickScrollTimeout = null;
-  let unbindArriveHandler = null;
-
-  // ===== Feature Detect =====
-  const mqlReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)');
-  const isReducedMotion = () => !!(mqlReduced && mqlReduced.matches);
-  const hasGSAP = () => typeof gsap !== 'undefined';
-
-  // ===== Utils =====
-  function isMobile() {
-    return window.innerWidth <= 767.98;
-  }
-
-  function getEls() {
-    const $section = $('.nkt-list-categories');
-    const $list = $('.nkt-list-categories__list');
-    const $thumbnails = $('.cate-item__thumbnail');
-    const $cateItems = $('.cate-item');
-    return { $section, $list, $thumbnails, $cateItems };
-  }
-
-  // ===== Measurements =====
-  function calculateMinHeight($list, $thumbnails) {
-    // backup inline style để restore chính xác
-    const restore = [];
-    $thumbnails.each(function () {
-      const el = this;
-      restore.push([el, el.getAttribute('style')]);
-    });
-
-    // collapse thumbnails để đo list height khi gọn
-    gsap.set($thumbnails.toArray(), {
-      visibility: 'hidden',
-      height: 0,
-      marginBottom: 0,
-      paddingTop: 0,
-      paddingBottom: 0,
-      overflow: 'hidden',
-    });
-
-    const h = $list.outerHeight();
-
-    // restore inline styles
-    restore.forEach(([el, style]) => {
-      if (style === null) el.removeAttribute('style');
-      else el.setAttribute('style', style);
-    });
-
-    return h;
-  }
-
-  // ===== Instant states (khi reduced motion hoặc cần reset nhanh) =====
-  function instantHide($list, $thumbnails) {
-    minimizedHeight = calculateMinHeight($list, $thumbnails);
-    $thumbnails.css({ opacity: 0, height: 0, marginBottom: 0 });
-    $list[0].style.height = minimizedHeight + 'px';
-    hasAnimatedHide = true;
-    hasAnimatedShow = false;
-  }
-
-  function instantShow($list, $thumbnails) {
-    $thumbnails.css({ opacity: 1, height: 'auto', marginBottom: 0, transform: '' });
-    $list[0].style.height = '';
-    hasAnimatedShow = true;
-    hasAnimatedHide = false;
-  }
-
-  // ===== Animations =====
-  function hideThumbnails($list, $thumbnails) {
-    if (isClickInteraction || isAnimating) return;
-
-    if (isReducedMotion()) {
-      instantHide($list, $thumbnails);
-      return;
+    function debounce(fn, wait) {
+        let t;
+        return function () {
+            const ctx = this, args = arguments;
+            clearTimeout(t);
+            t = setTimeout(function () {
+                fn.apply(ctx, args);
+            }, wait);
+        };
     }
 
-    isAnimating = true;
-    minimizedHeight = calculateMinHeight($list, $thumbnails);
+    let hasAnimatedHide = false;
+    let hasAnimatedShow = true;
+    let isAnimating = false;
+    let minimizedHeight = 0;
+    let isClickInteraction = false;
+    let clickScrollTimeout = null;
+    let unbindArriveHandler = null;
 
-    const tl = gsap.timeline({
-      onComplete: () => {
+    // ===== Feature Detect =====
+    const mqlReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+    const isReducedMotion = () => !!(mqlReduced && mqlReduced.matches);
+    const hasGSAP = () => typeof gsap !== 'undefined';
+
+    // ===== Utils =====
+    function isMobile() {
+        return window.innerWidth <= 767.98;
+    }
+
+    function getEls() {
+        const $section = $('.nkt-list-categories');
+        const $intro = $('.nkt-list-categories__intro');
+        const $list = $('.nkt-list-categories__list');
+        const $thumbnails = $('.cate-item__thumbnail');
+        const $cateItems = $('.cate-item');
+        return { $section, $intro, $list, $thumbnails, $cateItems };
+    }
+
+    /**
+     * Set the top position for .nkt-list-categories on mobile:
+     *   top = -(introHeight) + 30px
+     * Returns the threshold (used for calculating sticky):
+     *   threshold = -top = introHeight - 30
+     */
+
+    function setMobileTopFromIntro() {
+        const { $section, $intro } = getEls();
+        if (!$section.length) return 0;
+
+        if (!isMobile()) {
+        // Không can thiệp top ở non-mobile; trả 0 để caller tự chọn default
+        return 0;
+        }
+
+        const introH = Math.round($intro.outerHeight() || 0);
+        // top = -introH + 30
+        const topPx = (30 - introH);
+        $section[0].style.top = topPx + 'px';
+
+        // threshold = -top = introH - 30 (dùng trong isSticky calc)
+        const threshold = Math.max(0, introH - 30);
+        return threshold;
+    }
+
+    /**
+     * Get the current sticky threshold:
+     *  - Mobile: introHeight - 30 (from setMobileTopFromIntro)
+     *  - Non-mobile: use a fixed constant (matching old CSS: desktop -73, tablet -60)
+    */
+    function getStickyThreshold() {
+        if (isMobile()) {
+            // Ensure that the top has been set according to the intro before reading the threshold.
+            return setMobileTopFromIntro();
+        }
+
+        const w = window.innerWidth;
+        if (w <= 1023.98) {
+            return 60; // tablet: top ~ -60px
+        }
+        return 73; // desktop: top ~ -73px
+    }
+
+    // ===== Measurements =====
+    function calculateMinHeight($list, $thumbnails) {
+        const restore = [];
+        $thumbnails.each(function () {
+            const el = this;
+            restore.push([el, el.getAttribute('style')]);
+        });
+
+        gsap.set($thumbnails.toArray(), {
+            visibility: 'hidden',
+            height: 0,
+            marginBottom: 0,
+            paddingTop: 0,
+            paddingBottom: 0,
+            overflow: 'hidden',
+        });
+
+        const h = $list.outerHeight();
+
+        restore.forEach(([el, style]) => {
+            if (style === null) el.removeAttribute('style');
+            else el.setAttribute('style', style);
+        });
+
+        return h;
+    }
+
+    // ===== Instant states =====
+    function instantHide($list, $thumbnails) {
+        minimizedHeight = calculateMinHeight($list, $thumbnails);
+        $thumbnails.css({ opacity: 0, height: 0, marginBottom: 0 });
+        $list[0].style.height = minimizedHeight + 'px';
         hasAnimatedHide = true;
         hasAnimatedShow = false;
-        isAnimating = false;
-      },
+    }
+
+    function instantShow($list, $thumbnails) {
+        $thumbnails.css({ opacity: 1, height: 'auto', marginBottom: 0, transform: '' });
+        $list[0].style.height = '';
+        hasAnimatedShow = true;
+        hasAnimatedHide = false;
+    }
+
+    // ===== Animations =====
+    function hideThumbnails($list, $thumbnails) {
+        if (isClickInteraction || isAnimating) return;
+
+        if (isReducedMotion()) {
+            instantHide($list, $thumbnails);
+            return;
+        }
+
+        isAnimating = true;
+        minimizedHeight = calculateMinHeight($list, $thumbnails);
+
+        const tl = gsap.timeline({
+        onComplete: () => {
+            hasAnimatedHide = true;
+            hasAnimatedShow = false;
+            isAnimating = false;
+        },
     });
 
     tl.to($list[0], {
@@ -215,86 +238,95 @@
 
   // ===== Init: scroll + sticky toggle =====
   function initCategoryScroll() {
-    if (!isMobile()) return;
+    if (!hasGSAP()) return;
 
     const { $section, $list, $thumbnails } = getEls();
 
-    // Recalc khi ảnh trong thumbnails load xong (trường hợp lazy/cache)
+    // Lần đầu & mọi lúc có thể đổi: set top động trên mobile
+    setMobileTopFromIntro();
+
+    // Recalc khi ảnh trong thumbnails load xong
     $thumbnails.find('img').each(function () {
       if (this.complete) return;
       $(this).one('load', () => {
         if (hasAnimatedShow) $list[0].style.height = '';
+        // Intro cao có thể đổi do reflow -> set lại top ở mobile
+        setMobileTopFromIntro();
       });
     });
 
-    // Observers: khi layout/DOM thay đổi, đảm bảo list ở auto-height nếu đang show
+    // Observers: khi layout/DOM thay đổi
     let ro = null, mo = null;
     if ('ResizeObserver' in window) {
       ro = new ResizeObserver(() => {
         if (hasAnimatedShow) $list[0].style.height = '';
+        // viewport đổi -> tính lại top động ở mobile
+        setMobileTopFromIntro();
       });
-      ro.observe($list[0]);
+      // Observe cả list & section để nhạy hơn
+      const { $intro } = getEls();
+      if ($intro[0]) ro.observe($intro[0]);
+      if ($list[0]) ro.observe($list[0]);
     }
     if ('MutationObserver' in window) {
       mo = new MutationObserver(() => {
         if (hasAnimatedShow) $list[0].style.height = '';
+        setMobileTopFromIntro();
       });
-      mo.observe($list[0], { childList: true, subtree: true });
+      mo.observe(document.body, { childList: true, subtree: true });
     }
 
-    // Load lần đầu: đo minimizedHeight tham khảo (khi hide sẽ đo JIT lại)
+    // Load first time: measure minimizedHeight reference
     $(window).on('load', () => {
       minimizedHeight = calculateMinHeight($list, $thumbnails);
+      setMobileTopFromIntro();
     });
 
-    // Resize/orientation: clear inline height để auto
-    $(window).on('orientationchange resize', () => {
-      if (!isMobile()) return;
+    // Resize/orientation: clear height & set lại top động ở mobile
+    $(window).on('orientationchange resize', debounce(() => {
       $list[0].style.height = '';
-    });
+      setMobileTopFromIntro();
+    }, 50));
 
-    // ==== Sticky toggle logic (theo đúng snippet của bạn) ====
-    // - Dùng debounce(…, 10)
-    // - Toggle class .has-sticky cho .nkt-list-categories và body
-    // - Detect chuyển sticky->non-sticky khi cuộn lên => showAllCatesNow()
-    const THRESHOLD = 73; // khớp với top: -73px trong CSS trên desktop (đã thấy trong ví dụ của bạn)
+    // ==== Sticky toggle logic (giống snippet của bạn, nhưng threshold động) ====
     let lastScrollTop = $(window).scrollTop();
-    let wasSticky = $(window).scrollTop() > $section.offset().top - THRESHOLD;
+    // threshold ban đầu
+    let threshold = getStickyThreshold();
+    // khởi tạo wasSticky
+    let wasSticky = $(window).scrollTop() > $section.offset().top - threshold;
 
     $(window).on('scroll', debounce(function () {
+      // Each time you scroll, calculate a new threshold (mobile may change according to intro height)
+      threshold = getStickyThreshold();
+
       const scrollTop = $(window).scrollTop();
       const scrollingUp = scrollTop < lastScrollTop;
       lastScrollTop = scrollTop;
 
-      const isSticky = scrollTop > $section.offset().top - THRESHOLD;
+      const isSticky = scrollTop > $section.offset().top - threshold;
 
-      // toggle class như code gốc của bạn
+      // toggle class like the original code
       $('.nkt-list-categories, body').toggleClass('has-sticky', isSticky);
 
-      // === Animation rules trong sticky ===
-      // Nếu đang sticky:
+      // In sticky: scroll down -> hide
       if (isSticky) {
-        // Cuộn xuống trong sticky -> hide (nếu chưa hide)
         if (!hasAnimatedHide && !isClickInteraction && !isReducedMotion()) {
           hideThumbnails($list, $thumbnails);
         }
       }
 
-      // Ngay khoảnh khắc remove has-sticky (từ sticky -> non-sticky) và đang cuộn lên:
+      // Remove has-sticky when scrolling up: show full immediately
       if (wasSticky && !isSticky && scrollingUp) {
-        // -> show full cates ngay lập tức theo yêu cầu của bạn
         showAllCatesNow();
       }
 
-      // Nếu đã non-sticky (rời sticky) nhưng không rơi vào case trên (ví dụ cuộn xuống nhanh):
+      // remove sticky in general: ensure show state + auto height
       if (!isSticky) {
-        // đảm bảo ở trạng thái show & auto height (không kẹt số)
         hasAnimatedHide = false;
         hasAnimatedShow = true;
         $list[0].style.height = '';
       }
 
-      // update state
       wasSticky = isSticky;
     }, 10));
 
@@ -306,10 +338,10 @@
       if (mo) mo.disconnect();
     });
 
-    // Nếu người dùng đổi setting reduced-motion, clear height để tránh kẹt
     if (mqlReduced && mqlReduced.addEventListener) {
       mqlReduced.addEventListener('change', () => {
         $list[0].style.height = '';
+        setMobileTopFromIntro();
       });
     }
   }
@@ -350,7 +382,6 @@
 
       window.scrollTo({ top: targetPosition, behavior: 'smooth' });
 
-      // unlock theo vị trí
       const arriveHandler = () => {
         const delta = Math.abs($(window).scrollTop() - targetPosition);
         if (delta < 8) {
@@ -362,7 +393,6 @@
       $(window).on('scroll', arriveHandler);
       unbindArriveHandler = () => $(window).off('scroll', arriveHandler);
 
-      // fallback 4s
       clickScrollTimeout = setTimeout(() => {
         isClickInteraction = false;
         if (unbindArriveHandler) {
@@ -390,7 +420,6 @@
       }
     },
     forceHide() {
-      if (!isMobile()) return;
       const { $list, $thumbnails } = getEls();
       if (isReducedMotion()) {
         instantHide($list, $thumbnails);
@@ -405,13 +434,17 @@
         hasAnimatedShow,
         isAnimating,
         reducedMotion: isReducedMotion(),
+        mobile: isMobile(),
       };
+    },
+   
+    refreshMobileTop() {
+      setMobileTopFromIntro();
     },
   };
 
   // ===== Entry =====
   $(document).ready(function () {
-    console.log("zil check code now")
     if (!hasGSAP()) return;
     initCategoryScroll();
     nktScrollWineItem();
