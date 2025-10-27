@@ -95,3 +95,62 @@ if (!function_exists('nakatani_create_custom_taxonomy')) {
 	}
 	add_action('init', 'nakatani_create_custom_taxonomy', 0);
 }
+
+// Add filter dropdown for categories and types on admin post list
+if (!function_exists('nakatani_add_admin_filters')) {
+	function nakatani_add_admin_filters() {
+		global $typenow;
+		
+		// Only add filters for 'wine' post type
+		if ($typenow == 'wine') {
+			// Filter by Category
+			$selected = isset($_GET['category-wine']) ? $_GET['category-wine'] : '';
+			$category_args = array(
+				'show_option_all' => 'All Categories',
+				'taxonomy' => 'category-wine',
+				'name' => 'category-wine',
+				'selected' => $selected,
+			);
+			wp_dropdown_categories($category_args);
+			
+			// Filter by Type
+			$selected_type = isset($_GET['type-wine']) ? $_GET['type-wine'] : '';
+			$type_args = array(
+				'show_option_all' => 'All Types',
+				'taxonomy' => 'type-wine',
+				'name' => 'type-wine',
+				'selected' => $selected_type,
+			);
+			wp_dropdown_categories($type_args);
+		}
+	}
+	add_action('restrict_manage_posts', 'nakatani_add_admin_filters');
+}
+
+// Apply filter query
+if (!function_exists('nakatani_filter_admin_posts')) {
+	function nakatani_filter_admin_posts($query) {
+		global $pagenow, $typenow;
+		
+		if ($pagenow == 'edit.php' && $typenow == 'wine' && is_admin()) {
+			// Filter by Category
+			if (isset($_GET['category-wine']) && $_GET['category-wine'] != '') {
+				$query->query_vars['tax_query'][] = array(
+					'taxonomy' => 'category-wine',
+					'field' => 'term_id',
+					'terms' => $_GET['category-wine'],
+				);
+			}
+			
+			// Filter by Type
+			if (isset($_GET['type-wine']) && $_GET['type-wine'] != '') {
+				$query->query_vars['tax_query'][] = array(
+					'taxonomy' => 'type-wine',
+					'field' => 'term_id',
+					'terms' => $_GET['type-wine'],
+				);
+			}
+		}
+	}
+	add_action('parse_query', 'nakatani_filter_admin_posts');
+}
