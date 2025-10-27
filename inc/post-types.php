@@ -23,7 +23,7 @@ if (!function_exists('nakatani_create_custom_post_type')) {
 				'menu_name' => __('Wine'),
 			),
 			'label' => __('Wine', 'nakatani'),
-			'supports' => array('title', 'thumbnail','revisions'),
+			'supports' => array('title', 'thumbnail', 'revisions', 'page-attributes'),
 			'menu_icon' => 'dashicons-admin-generic',
 			'hierarchical' => false,
 			'public' => true,
@@ -35,8 +35,6 @@ if (!function_exists('nakatani_create_custom_post_type')) {
 			'can_export' => true,
 			'has_archive' => false,
 			'exclude_from_search' => false,
-			'publicly_queryable' => true,
-			'capability_type' => 'post',
 			'publicly_queryable' => false, 
 			'show_in_rest' => true,
 		));
@@ -127,22 +125,17 @@ add_action('restrict_manage_posts', function() {
 });
 
 // Apply filter query
-add_action('parse_query', function($query) {
-	global $pagenow, $typenow;
+add_action('pre_get_posts', function($query) {
+	global $pagenow;
 	
-	// Only run on admin post list page
-	if (!is_admin() || $pagenow != 'edit.php' || $typenow != 'wine') {
+	// Only run on admin post list page for wine post type
+	if (!is_admin() || $pagenow != 'edit.php' || !isset($_GET['post_type']) || $_GET['post_type'] != 'wine') {
 		return;
 	}
 	
 	// Get filter values
-	$category_filter = isset($_GET['category-wine']) ? intval($_GET['category-wine']) : 0;
-	$type_filter = isset($_GET['type-wine']) ? intval($_GET['type-wine']) : 0;
-	
-	// Don't do anything if both are 0 or unset
-	if ($category_filter <= 0 && $type_filter <= 0) {
-		return;
-	}
+	$category_filter = isset($_GET['category-wine']) ? absint($_GET['category-wine']) : 0;
+	$type_filter = isset($_GET['type-wine']) ? absint($_GET['type-wine']) : 0;
 	
 	// Build tax_query
 	$tax_query = array();
@@ -151,7 +144,7 @@ add_action('parse_query', function($query) {
 		$tax_query[] = array(
 			'taxonomy' => 'category-wine',
 			'field' => 'term_id',
-			'terms' => array($category_filter),
+			'terms' => $category_filter,
 		);
 	}
 	
@@ -159,15 +152,27 @@ add_action('parse_query', function($query) {
 		$tax_query[] = array(
 			'taxonomy' => 'type-wine',
 			'field' => 'term_id',
-			'terms' => array($type_filter),
+			'terms' => $type_filter,
 		);
 	}
 	
-	// Set relation if multiple filters
-	if (count($tax_query) > 1) {
-		$tax_query['relation'] = 'AND';
+	// Apply tax_query if we have filters
+	if (!empty($tax_query)) {
+		if (count($tax_query) > 1) {
+			$tax_query['relation'] = 'AND';
+		}
+		$query->set('tax_query', $tax_query);
 	}
 	
-	// Apply the tax_query
-	$query->query_vars['tax_query'] = $tax_query;
+	// Add menu_order support for drag-drop sorting
+	$query->set('orderby', 'menu_order');
+	$query->set('order', 'ASC');
 });
+
+// Enable simple page ordering for wine posts
+add_filter('simple_page_ordering_is_sortable', function($sortable, $post) {
+	if ($post->post_type === 'wine') {
+		return true;
+	}
+	return $sortable;
+}, 10, 2);
